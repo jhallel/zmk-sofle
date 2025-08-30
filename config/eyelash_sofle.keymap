@@ -38,51 +38,78 @@
         tap-ms = <100>;
     };
 
-    behaviors {
+    macros {
         password_macro: password_macro {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_press &kp P &macro_release &macro_press &kp O &macro_release &macro_press &kp N &macro_release &macro_press &kp G &macro_release &macro_press &kp P &macro_release &macro_press &kp O &macro_release &macro_press &kp N &macro_release &macro_press &kp G &macro_release &macro_press &kp P &macro_release &macro_press &kp O &macro_release &macro_press &kp N &macro_release &macro_press &kp G &macro_release &macro_press &kp P &macro_release &macro_press &kp O &macro_release &macro_press &kp N &macro_release &macro_press &kp G &macro_release &macro_press &kp N1 &macro_release &macro_press &kp N3 &macro_release &macro_press &kp N5 &macro_release>;
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings
+                = <&kp P &kp O &kp N &kp G &kp P &kp O &kp N &kp G &kp P &kp O &kp N &kp G &kp P &kp O &kp N &kp G &kp N1 &kp N3 &kp N5>;
         };
         bench_password_macro: bench_password_macro {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_press &kp Z &macro_release &macro_press &kp X &macro_release &macro_press &kp C &macro_release &macro_press &kp Z &macro_release &macro_press &kp X &macro_release &macro_press &kp C &macro_release &macro_press &kp Z &macro_release &macro_press &kp X &macro_release &macro_press &kp C &macro_release &macro_press &kp Z &macro_release &macro_press &kp X &macro_release &macro_press &kp C &macro_release &macro_press &kp N1 &macro_release &macro_press &kp N3 &macro_release &macro_press &kp N5 &macro_release>;
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings
+                = <&kp Z &kp X &kp C &kp Z &kp X &kp C &kp Z &kp X &kp C &kp Z &kp X &kp C &kp N1 &kp N3 &kp N5>;
         };
         git_status: git_status {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_press &kp G &macro_release &macro_press &kp I &macro_release &macro_press &kp T &macro_release &macro_press &kp SPACE &macro_release &macro_press &kp S &macro_release &macro_press &kp T &macro_release &macro_press &kp A &macro_release &macro_press &kp T &macro_release &macro_press &kp U &macro_release &macro_press &kp S &macro_release &macro_press &kp RET &macro_release>;
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings
+                = <&kp G &kp I &kp T &kp SPACE &kp S &kp T &kp A &kp T &kp U &kp S &kp RET>;
         };
         git_add_all: git_add_all {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_press &kp G &macro_release &macro_press &kp I &macro_release &macro_press &kp T &macro_release &macro_press &kp SPACE &macro_release &macro_press &kp A &macro_release &macro_press &kp D &macro_release &macro_press &kp D &macro_release &macro_press &kp SPACE &macro_release &macro_press &kp DOT &macro_release &macro_press &kp RET &macro_release>;
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings
+                = <&kp G &kp I &kp T &kp SPACE &kp A &kp D &kp D &kp SPACE &kp DOT &kp RET>;
         };
         git_commit: git_commit {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_press &kp G &macro_release &macro_press &kp I &macro_release &macro_press &kp T &macro_release &macro_press &kp SPACE &macro_release &macro_press &kp C &macro_release &macro_press &kp O &macro_release &macro_press &kp M &macro_release &macro_press &kp M &macro_release &macro_press &kp I &macro_release &macro_press &kp T &macro_release &macro_press &kp SPACE &macro_release &macro_press &kp DASH &macro_release &macro_press &kp M &macro_release &macro_press &kp SPACE &macro_release &macro_press &kp DQT &macro_release>;
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings
+                = <&kp G &kp I &kp T &kp SPACE &kp C &kp O &kp M &kp M &kp I &kp T &kp SPACE &kp MINUS &kp M &kp SPACE &kp DQT>;
         };
         git_push: git_push {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_press &kp G &macro_release &macro_press &kp I &macro_release &macro_press &kp T &macro_release &macro_press &kp SPACE &macro_release &macro_press &kp P &macro_release &macro_press &kp U &macro_release &macro_press &kp S &macro_release &macro_press &kp H &macro_release &macro_press &kp RET &macro_release>;
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings
+                = <&kp G &kp I &kp T &kp SPACE &kp P &kp U &kp S &kp H &kp RET>;
         };
         git_pull: git_pull {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_press &kp G &macro_release &macro_press &kp I &macro_release &macro_press &kp T &macro_release &macro_press &kp SPACE &macro_release &macro_press &kp P &macro_release &macro_press &kp U &macro_release &macro_press &macro_press &kp L &macro_release &macro_press &kp L &macro_release &macro_press &kp RET &macro_release>;
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings
+                = <&kp G &kp I &kp T &kp SPACE &kp P &kp U &kp L &kp L &kp RET>;
         };
         git_log: git_log {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_press &kp G &macro_release &macro_press &kp I &macro_release &macro_press &kp T &macro_release &macro_press &kp SPACE &macro_release &macro_press &kp L &macro_release &macro_press &macro_press &kp O &macro_release &macro_press &kp G &macro_release &macro_press &kp RET &macro_release>;
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings
+                = <&kp G &kp I &kp T &kp SPACE &kp L &kp O &kp G &kp RET>;
         };
         print_screen: print_screen {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_press &kp PSCRN &macro_release>;
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings
+                = <&kp PSCRN>;
         };
     };
 
