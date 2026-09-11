@@ -11,10 +11,11 @@ LV_IMG_DECLARE(eva21); LV_IMG_DECLARE(eva22); LV_IMG_DECLARE(eva23); LV_IMG_DECL
 LV_IMG_DECLARE(eva25); LV_IMG_DECLARE(eva26); LV_IMG_DECLARE(eva27); LV_IMG_DECLARE(eva28);
 LV_IMG_DECLARE(eva29); LV_IMG_DECLARE(eva30); LV_IMG_DECLARE(eva31); LV_IMG_DECLARE(eva32);
 
-/* 89 playback steps at 220 ms each (~19.58 s total). */
+/* 89 playback steps at 220 ms each (~19.58 s total).
+ * Flow: poster intro -> characters (including Kaji) -> NERV/warning -> awakening.
+ */
 static const lv_img_dsc_t *anim_imgs[] = {
-    &eva01,&eva01,&eva01,&eva01,
-    &eva02,&eva02,&eva02,&eva02,
+    &eva01,&eva01,&eva01,&eva01,&eva01,&eva01,&eva01,&eva01,
     &eva03,&eva03,&eva03,&eva03,&eva03,&eva04,
     &eva05,&eva05,&eva05,&eva05,&eva05,&eva06,
     &eva07,&eva07,&eva07,&eva07,&eva07,&eva08,
