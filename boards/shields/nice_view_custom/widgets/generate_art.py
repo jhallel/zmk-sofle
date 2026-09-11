@@ -17,7 +17,10 @@ ROW_BYTES = WIDTH // 8
 FRAME_BYTES = ROW_BYTES * HEIGHT
 FRAME_COUNT = 57
 
-PAYLOAD = Path(__file__).with_name("eva_reel_payload.txt").read_text().strip()
+PAYLOAD = "".join(
+    Path(__file__).with_name(f"eva_payload_{i}.txt").read_text().strip()
+    for i in range(1, 7)
+)
 
 
 def main():
