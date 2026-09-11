@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Generate the expanded final-size LVGL Evangelion reel for nice!view.
+"""Generate the final 57-frame 160x68 LVGL 1-bit Evangelion reel for nice!view.
 
-Frames 1..32 are the existing exact-boundary working reel. Frames 33..60 are
-new 68x160 portrait frames (Tokyo-3, NERV facility, entry/startup, activation,
-and a longer EVA-01 awakening) stored already rotated/packed at the final
-160x68 framebuffer size. No runtime sprite-sheet slicing is used, so row bleed
-cannot occur.
+All source frames are pre-rendered at the final 68x160 portrait display size,
+then stored here already rotated/packed as 160x68 framebuffer data. There is
+no runtime sprite-sheet slicing, so adjacent frames cannot bleed into each
+other.
 """
 from pathlib import Path
 import base64
@@ -16,23 +15,9 @@ WIDTH = 160
 HEIGHT = 68
 ROW_BYTES = WIDTH // 8
 FRAME_BYTES = ROW_BYTES * HEIGHT
-BASE_FRAME_COUNT = 32
-EXTRA_FRAME_COUNT = 28
-FRAME_COUNT = BASE_FRAME_COUNT + EXTRA_FRAME_COUNT
+FRAME_COUNT = 57
 
-BASE_PAYLOAD = "".join(
-    (Path(__file__).with_name(f"eva_payload_{i}.txt").read_text().strip())
-    for i in range(1, 7)
-)
-EXTRA_PAYLOAD = Path(__file__).with_name("eva_reel_payload.txt").read_text().strip()
-
-
-def decode_payload(payload, frame_count, label):
-    raw = zlib.decompress(base64.b85decode(payload.encode("ascii")))
-    expected = frame_count * FRAME_BYTES
-    if len(raw) != expected:
-        raise SystemExit(f"bad {label} payload size: {len(raw)} != {expected}")
-    return raw
+PAYLOAD = Path(__file__).with_name("eva_reel_payload.txt").read_text().strip()
 
 
 def main():
@@ -40,9 +25,10 @@ def main():
         raise SystemExit("usage: generate_art.py OUTPUT_C")
 
     out_path = Path(sys.argv[1])
-    raw = decode_payload(BASE_PAYLOAD, BASE_FRAME_COUNT, "base") + decode_payload(
-        EXTRA_PAYLOAD, EXTRA_FRAME_COUNT, "expanded reel"
-    )
+    raw = zlib.decompress(base64.b85decode(PAYLOAD.encode("ascii")))
+    expected = FRAME_COUNT * FRAME_BYTES
+    if len(raw) != expected:
+        raise SystemExit(f"bad payload size: {len(raw)} != {expected}")
 
     lines = [
         "#include <lvgl.h>",
