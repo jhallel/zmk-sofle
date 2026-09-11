@@ -18,6 +18,7 @@ PAYLOAD = "".join(
     (Path(__file__).with_name(f"eva_payload_{i}.txt").read_text().strip())
     for i in range(1, 7)
 )
+INTRO_PAYLOAD = Path(__file__).with_name("eva_intro_payload.txt").read_text().strip()
 
 
 def get_pixel(raw, frame_idx, x, y):
@@ -35,12 +36,37 @@ def set_pixel(raw, frame_idx, x, y, value):
         raw[offset] &= ~mask
 
 
+def set_portrait_pixel(raw, frame_idx, x, y, value):
+    """Set a pixel using the mounted 68x140 portrait coordinates."""
+    set_pixel(raw, frame_idx, SRC_WIDTH - 1 - y, x, value)
+
+
+def replace_intro_frame(raw):
+    """Use the new poster-style EVA-01 image as frame 1."""
+    intro = zlib.decompress(base64.b85decode(INTRO_PAYLOAD.encode("ascii")))
+    if len(intro) != SRC_FRAME_BYTES:
+        raise SystemExit(f"bad intro payload size: {len(intro)} != {SRC_FRAME_BYTES}")
+    raw[:SRC_FRAME_BYTES] = intro
+
+
 def strip_source_frame_labels(raw):
     """Remove the 25..32 sheet-label bleed from eva17..eva24 only."""
     for frame_idx in range(16, 24):
         for y in range(0, 18):
             for x in range(0, 10):
                 set_pixel(raw, frame_idx, x, y, 0)
+
+
+def clean_character_artifacts(raw):
+    """Remove the isolated bottom-edge glyph from Ryoji Kaji only.
+
+    The full 32-frame contact sheet was checked; this was the only matching
+    stray edge glyph. The character artwork itself is intentionally retained.
+    """
+    kaji_frame = 16  # eva17, zero-based
+    for py in range(132, 140):
+        for px in range(54, 68):
+            set_portrait_pixel(raw, kaji_frame, px, py, 1)
 
 
 def stretch_frame(raw, frame_idx):
@@ -64,7 +90,9 @@ def main():
     if len(raw) != expected:
         raise SystemExit(f"bad payload size: {len(raw)} != {expected}")
 
+    replace_intro_frame(raw)
     strip_source_frame_labels(raw)
+    clean_character_artifacts(raw)
 
     lines = [
         "#include <lvgl.h>",
