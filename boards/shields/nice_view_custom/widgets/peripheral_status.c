@@ -12,62 +12,58 @@ DECL_EVA(31); DECL_EVA(32); DECL_EVA(33); DECL_EVA(34); DECL_EVA(35); DECL_EVA(3
 DECL_EVA(37); DECL_EVA(38); DECL_EVA(39); DECL_EVA(40); DECL_EVA(41); DECL_EVA(42);
 DECL_EVA(43); DECL_EVA(44); DECL_EVA(45); DECL_EVA(46); DECL_EVA(47); DECL_EVA(48);
 DECL_EVA(49); DECL_EVA(50); DECL_EVA(51); DECL_EVA(52); DECL_EVA(53); DECL_EVA(54);
-DECL_EVA(55); DECL_EVA(56); DECL_EVA(57); DECL_EVA(58); DECL_EVA(59); DECL_EVA(60);
+DECL_EVA(55); DECL_EVA(56); DECL_EVA(57);
 #undef DECL_EVA
 
 /*
- * Expanded cinematic reel, still using CONFIG_CUSTOM_ANIMATION_SPEED as the
- * total loop duration (~19.58 s). The original character portraits and alert
- * frames are preserved; frames 33..60 add Tokyo-3, facility/entry/startup,
- * activation, and a twelve-pose EVA-01 awakening.
- *
- * 86 playback steps => ~228 ms/step at 19.58 s total.
+ * Final 57-frame cinematic reel.
+ * Frames 32..55 are the 24-frame EVA-01 awakening.
+ * Static/cinematic shots intentionally hold longer; the awakening advances
+ * faster so it reads as animation rather than a slideshow.
+ * Total loop duration: 32.14 seconds.
  */
 static const lv_img_dsc_t *anim_imgs[] = {
-    /* Poster intro */
-    &eva01,&eva01,&eva01,&eva01,&eva01,&eva01,
-
-    /* New Tokyo-3 establishing shots */
-    &eva33,&eva33,&eva34,&eva34,&eva35,&eva35,
-
-    /* NERV facility */
-    &eva36,&eva36,&eva37,&eva37,
-
-    /* Original cast: Shinji, Rei, Asuka, Misato, Kaworu, Gendo, Ritsuko, Kaji */
-    &eva03,&eva03,&eva05,&eva05,&eva07,&eva07,&eva09,&eva09,
-    &eva11,&eva11,&eva13,&eva13,&eva15,&eva15,&eva17,&eva17,
-
-    /* NERV / warning escalation */
-    &eva18,&eva18,&eva18,
-    &eva20,&eva20,&eva21,&eva21,&eva22,&eva22,&eva23,&eva23,&eva24,&eva24,
-
-    /* New entry / launch */
-    &eva38,&eva38,&eva39,&eva39,&eva40,&eva40,
-
-    /* New startup */
-    &eva41,&eva41,&eva42,&eva42,&eva43,&eva43,&eva44,&eva44,
-
-    /* New activation */
-    &eva45,&eva45,&eva46,&eva46,&eva47,&eva47,&eva48,&eva48,
-
-    /* New EVA-01 awakening: dormant -> eye -> head -> jaw -> rise -> roar */
-    &eva49,&eva50,&eva51,&eva52,&eva53,&eva54,&eva55,&eva56,
-    &eva57,&eva58,&eva59,&eva60,&eva59,&eva60,
-
-    /* Settle / loop */
-    &eva18,&eva18,&eva02,&eva01,&eva01
+    &eva01, &eva02, &eva03, &eva04, &eva05, &eva06, &eva07, &eva08,
+    &eva09, &eva10, &eva11, &eva12, &eva13, &eva14, &eva15, &eva16,
+    &eva17, &eva18, &eva19, &eva20, &eva21, &eva22, &eva23, &eva24,
+    &eva25, &eva26, &eva27, &eva28, &eva29, &eva30, &eva31, &eva32,
+    &eva33, &eva34, &eva35, &eva36, &eva37, &eva38, &eva39, &eva40,
+    &eva41, &eva42, &eva43, &eva44, &eva45, &eva46, &eva47, &eva48,
+    &eva49, &eva50, &eva51, &eva52, &eva53, &eva54, &eva55, &eva56,
+    &eva57,
 };
+
+static const uint16_t anim_duration_ms[] = {
+    1210, 990, 990, 990, 1210, 940, 940, 880, 940, 990,
+    940, 940, 990, 990, 1040, 770, 770, 770, 770, 770,
+    830, 770, 830, 770, 660, 720, 830, 720, 830, 880,
+    990, 180, 180, 170, 170, 165, 165, 160, 160, 160,
+    160, 155, 155, 150, 150, 150, 150, 155, 155, 160,
+    160, 170, 180, 220, 280, 200, 220,
+};
+
+BUILD_ASSERT(ARRAY_SIZE(anim_imgs) == ARRAY_SIZE(anim_duration_ms),
+             "EVA frame and timing tables must match");
+
+static lv_obj_t *anim_art;
+static uint8_t anim_index;
+
+static void advance_animation(lv_timer_t *timer) {
+    anim_index = (anim_index + 1U) % ARRAY_SIZE(anim_imgs);
+    lv_img_set_src(anim_art, anim_imgs[anim_index]);
+    lv_timer_set_period(timer, anim_duration_ms[anim_index]);
+}
 
 int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     widget->obj = lv_obj_create(parent);
     lv_obj_set_size(widget->obj, 160, 68);
 
-    lv_obj_t *art = lv_animimg_create(widget->obj);
-    lv_obj_align(art, LV_ALIGN_TOP_LEFT, 0, 0);
-    lv_animimg_set_src(art, (const void **)anim_imgs, ARRAY_SIZE(anim_imgs));
-    lv_animimg_set_duration(art, CONFIG_CUSTOM_ANIMATION_SPEED);
-    lv_animimg_set_repeat_count(art, LV_ANIM_REPEAT_INFINITE);
-    lv_animimg_start(art);
+    anim_index = 0U;
+    anim_art = lv_img_create(widget->obj);
+    lv_obj_align(anim_art, LV_ALIGN_TOP_LEFT, 0, 0);
+    lv_img_set_src(anim_art, anim_imgs[anim_index]);
+
+    lv_timer_create(advance_animation, anim_duration_ms[anim_index], NULL);
     return 0;
 }
 
