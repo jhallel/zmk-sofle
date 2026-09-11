@@ -2,33 +2,60 @@
 #include <lvgl.h>
 #include "peripheral_status.h"
 
-LV_IMG_DECLARE(eva01); LV_IMG_DECLARE(eva02); LV_IMG_DECLARE(eva03); LV_IMG_DECLARE(eva04);
-LV_IMG_DECLARE(eva05); LV_IMG_DECLARE(eva06); LV_IMG_DECLARE(eva07); LV_IMG_DECLARE(eva08);
-LV_IMG_DECLARE(eva09); LV_IMG_DECLARE(eva10); LV_IMG_DECLARE(eva11); LV_IMG_DECLARE(eva12);
-LV_IMG_DECLARE(eva13); LV_IMG_DECLARE(eva14); LV_IMG_DECLARE(eva15); LV_IMG_DECLARE(eva16);
-LV_IMG_DECLARE(eva17); LV_IMG_DECLARE(eva18); LV_IMG_DECLARE(eva19); LV_IMG_DECLARE(eva20);
-LV_IMG_DECLARE(eva21); LV_IMG_DECLARE(eva22); LV_IMG_DECLARE(eva23); LV_IMG_DECLARE(eva24);
-LV_IMG_DECLARE(eva25); LV_IMG_DECLARE(eva26); LV_IMG_DECLARE(eva27); LV_IMG_DECLARE(eva28);
-LV_IMG_DECLARE(eva29); LV_IMG_DECLARE(eva30); LV_IMG_DECLARE(eva31); LV_IMG_DECLARE(eva32);
+#define DECL_EVA(n) LV_IMG_DECLARE(eva##n)
+DECL_EVA(01); DECL_EVA(02); DECL_EVA(03); DECL_EVA(04); DECL_EVA(05); DECL_EVA(06);
+DECL_EVA(07); DECL_EVA(08); DECL_EVA(09); DECL_EVA(10); DECL_EVA(11); DECL_EVA(12);
+DECL_EVA(13); DECL_EVA(14); DECL_EVA(15); DECL_EVA(16); DECL_EVA(17); DECL_EVA(18);
+DECL_EVA(19); DECL_EVA(20); DECL_EVA(21); DECL_EVA(22); DECL_EVA(23); DECL_EVA(24);
+DECL_EVA(25); DECL_EVA(26); DECL_EVA(27); DECL_EVA(28); DECL_EVA(29); DECL_EVA(30);
+DECL_EVA(31); DECL_EVA(32); DECL_EVA(33); DECL_EVA(34); DECL_EVA(35); DECL_EVA(36);
+DECL_EVA(37); DECL_EVA(38); DECL_EVA(39); DECL_EVA(40); DECL_EVA(41); DECL_EVA(42);
+DECL_EVA(43); DECL_EVA(44); DECL_EVA(45); DECL_EVA(46); DECL_EVA(47); DECL_EVA(48);
+DECL_EVA(49); DECL_EVA(50); DECL_EVA(51); DECL_EVA(52); DECL_EVA(53); DECL_EVA(54);
+DECL_EVA(55); DECL_EVA(56); DECL_EVA(57); DECL_EVA(58); DECL_EVA(59); DECL_EVA(60);
+#undef DECL_EVA
 
-/* 89 playback steps at 220 ms each (~19.58 s total).
- * Flow: poster intro -> characters (including Kaji) -> NERV/warning -> awakening.
+/*
+ * Expanded cinematic reel, still using CONFIG_CUSTOM_ANIMATION_SPEED as the
+ * total loop duration (~19.58 s). The original character portraits and alert
+ * frames are preserved; frames 33..60 add Tokyo-3, facility/entry/startup,
+ * activation, and a twelve-pose EVA-01 awakening.
+ *
+ * 86 playback steps => ~228 ms/step at 19.58 s total.
  */
 static const lv_img_dsc_t *anim_imgs[] = {
-    &eva01,&eva01,&eva01,&eva01,&eva01,&eva01,&eva01,&eva01,
-    &eva03,&eva03,&eva03,&eva03,&eva03,&eva04,
-    &eva05,&eva05,&eva05,&eva05,&eva05,&eva06,
-    &eva07,&eva07,&eva07,&eva07,&eva07,&eva08,
-    &eva09,&eva09,&eva09,&eva09,&eva09,&eva10,
-    &eva11,&eva11,&eva11,&eva11,&eva11,&eva12,
-    &eva13,&eva13,&eva13,&eva13,&eva13,&eva14,
-    &eva15,&eva15,&eva15,&eva15,&eva15,&eva16,
-    &eva17,&eva17,&eva17,&eva17,&eva17,
-    &eva18,&eva18,&eva18,&eva18,&eva18,
-    &eva19,&eva19,
-    &eva20,&eva21,&eva20,&eva21,&eva20,&eva21,&eva22,&eva23,&eva22,&eva23,&eva24,&eva23,
-    &eva25,&eva25,&eva25,&eva26,&eva26,&eva27,&eva28,&eva29,&eva30,&eva31,
-    &eva32,&eva32,&eva31,&eva32,&eva19
+    /* Poster intro */
+    &eva01,&eva01,&eva01,&eva01,&eva01,&eva01,
+
+    /* New Tokyo-3 establishing shots */
+    &eva33,&eva33,&eva34,&eva34,&eva35,&eva35,
+
+    /* NERV facility */
+    &eva36,&eva36,&eva37,&eva37,
+
+    /* Original cast: Shinji, Rei, Asuka, Misato, Kaworu, Gendo, Ritsuko, Kaji */
+    &eva03,&eva03,&eva05,&eva05,&eva07,&eva07,&eva09,&eva09,
+    &eva11,&eva11,&eva13,&eva13,&eva15,&eva15,&eva17,&eva17,
+
+    /* NERV / warning escalation */
+    &eva18,&eva18,&eva18,
+    &eva20,&eva20,&eva21,&eva21,&eva22,&eva22,&eva23,&eva23,&eva24,&eva24,
+
+    /* New entry / launch */
+    &eva38,&eva38,&eva39,&eva39,&eva40,&eva40,
+
+    /* New startup */
+    &eva41,&eva41,&eva42,&eva42,&eva43,&eva43,&eva44,&eva44,
+
+    /* New activation */
+    &eva45,&eva45,&eva46,&eva46,&eva47,&eva47,&eva48,&eva48,
+
+    /* New EVA-01 awakening: dormant -> eye -> head -> jaw -> rise -> roar */
+    &eva49,&eva50,&eva51,&eva52,&eva53,&eva54,&eva55,&eva56,
+    &eva57,&eva58,&eva59,&eva60,&eva59,&eva60,
+
+    /* Settle / loop */
+    &eva18,&eva18,&eva02,&eva01,&eva01
 };
 
 int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
