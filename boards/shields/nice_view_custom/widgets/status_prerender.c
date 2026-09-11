@@ -49,35 +49,63 @@ static void solid(lv_obj_t *canvas, int x, int y, int w, int h, lv_color_t color
     lv_canvas_draw_rect(canvas, x, y, w, h, &d);
 }
 
-static uint64_t glyph5x7(char c) {
+/* Clean standard 5x7 bitmap rows. Each return value uses the low 5 bits. */
+static uint8_t glyph5x7_row(char c, int row) {
+    static const uint8_t space[7] = {0,0,0,0,0,0,0};
+    static const uint8_t percent[7] = {25,26,4,8,22,6,0};
+    static const uint8_t n0[7] = {14,17,19,21,25,17,14};
+    static const uint8_t n1[7] = {4,12,4,4,4,4,14};
+    static const uint8_t n2[7] = {14,17,1,2,4,8,31};
+    static const uint8_t n3[7] = {30,1,1,14,1,1,30};
+    static const uint8_t n4[7] = {2,6,10,18,31,2,2};
+    static const uint8_t n5[7] = {31,16,16,30,1,1,30};
+    static const uint8_t n6[7] = {14,16,16,30,17,17,14};
+    static const uint8_t n7[7] = {31,1,2,4,8,8,8};
+    static const uint8_t n8[7] = {14,17,17,14,17,17,14};
+    static const uint8_t n9[7] = {14,17,17,15,1,1,14};
+    static const uint8_t A[7] = {14,17,17,31,17,17,17};
+    static const uint8_t B[7] = {30,17,17,30,17,17,30};
+    static const uint8_t C[7] = {15,16,16,16,16,16,15};
+    static const uint8_t E[7] = {31,16,16,30,16,16,31};
+    static const uint8_t I[7] = {31,4,4,4,4,4,31};
+    static const uint8_t L[7] = {16,16,16,16,16,16,31};
+    static const uint8_t M[7] = {17,27,21,21,17,17,17};
+    static const uint8_t N[7] = {17,25,21,19,17,17,17};
+    static const uint8_t O[7] = {14,17,17,17,17,17,14};
+    static const uint8_t P[7] = {30,17,17,30,16,16,16};
+    static const uint8_t R[7] = {30,17,17,30,20,18,17};
+    static const uint8_t S[7] = {15,16,16,14,1,1,30};
+    static const uint8_t T[7] = {31,4,4,4,4,4,4};
+    static const uint8_t U[7] = {17,17,17,17,17,17,14};
+    static const uint8_t Y[7] = {17,17,10,4,4,4,4};
+
+    const uint8_t *g = space;
     switch (c) {
-    case ' ': return 0x0ULL;
-    case '%': return 0x6744458c0ULL;
-    case '0': return 0x3a33ae62eULL; case '1': return 0x11842108eULL;
-    case '2': return 0x3a211111fULL; case '3': return 0x78217043eULL;
-    case '4': return 0x08ca97c42ULL; case '5': return 0x7e10f043eULL;
-    case '6': return 0x3a10f462eULL; case '7': return 0x7c2222108ULL;
-    case '8': return 0x3a317462eULL; case '9': return 0x3a317842eULL;
-    case 'A': return 0x3a31fc631ULL; case 'B': return 0x7a31f463eULL;
-    case 'C': return 0x3e108420fULL; case 'D': return 0x7a318c63eULL;
-    case 'E': return 0x7e10f421fULL; case 'I': return 0x7c842109fULL;
-    case 'L': return 0x42108421fULL; case 'M': return 0x4775ac631ULL;
-    case 'N': return 0x47359c631ULL; case 'O': return 0x3a318c62eULL;
-    case 'P': return 0x7a31f4210ULL; case 'R': return 0x7a31f5251ULL;
-    case 'S': return 0x3e107043eULL; case 'T': return 0x7c8421084ULL;
-    case 'U': return 0x46318c62eULL; case 'W': return 0x4631ad6aaULL;
-    case 'Y': return 0x462a21084ULL;
-    default: return 0x0ULL;
+    case '%': g = percent; break;
+    case '0': g = n0; break; case '1': g = n1; break;
+    case '2': g = n2; break; case '3': g = n3; break;
+    case '4': g = n4; break; case '5': g = n5; break;
+    case '6': g = n6; break; case '7': g = n7; break;
+    case '8': g = n8; break; case '9': g = n9; break;
+    case 'A': g = A; break; case 'B': g = B; break;
+    case 'C': g = C; break; case 'E': g = E; break;
+    case 'I': g = I; break; case 'L': g = L; break;
+    case 'M': g = M; break; case 'N': g = N; break;
+    case 'O': g = O; break; case 'P': g = P; break;
+    case 'R': g = R; break; case 'S': g = S; break;
+    case 'T': g = T; break; case 'U': g = U; break;
+    case 'Y': g = Y; break;
+    default: break;
     }
+    return g[row];
 }
 
 static void pixel_text_adv(lv_obj_t *canvas, int x, int y, const char *s, int advance) {
     for (int i = 0; s[i] != '\0'; i++) {
-        uint64_t bits = glyph5x7(s[i]);
         for (int row = 0; row < 7; row++) {
+            uint8_t bits = glyph5x7_row(s[i], row);
             for (int col = 0; col < 5; col++) {
-                int bit = 34 - (row * 5 + col);
-                if ((bits >> bit) & 1ULL) {
+                if (bits & (1U << (4 - col))) {
                     solid(canvas, x + col, y + row, 1, 1, LVGL_FOREGROUND);
                 }
             }
@@ -109,13 +137,15 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     lv_obj_t *canvas = lv_obj_get_child(widget, 1);
     draw_bg(canvas, &nerv_bg_2);
 
-    int fill_w = (state->battery * 24) / 100;
+    /* Portrait y=114..123 maps to middle-tile y=46..55. */
+    int fill_w = (state->battery * 29) / 100;
     if (fill_w > 0) {
-        solid(canvas, 4, 52, fill_w, 9, LVGL_FOREGROUND);
+        solid(canvas, 5, 46, fill_w, 10, LVGL_FOREGROUND);
     }
+
     char pct[8];
     snprintf(pct, sizeof(pct), "%u%%", state->battery);
-    pixel_text(canvas, 40, 51, pct);
+    pixel_text_adv(canvas, 42, 47, pct, 5);
     rotate_canvas(canvas, cbuf);
 }
 
@@ -124,8 +154,8 @@ static void draw_bottom(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     draw_bg(canvas, &nerv_bg_3);
 
     const char *link = state->usb_selected ? "USB" : (state->connected ? "BT" : "STBY");
-    pixel_text(canvas, 28, 0, link);
-    pixel_text_adv(canvas, 28, 10, mode_name(state->layer_index), 5);
+    pixel_text(canvas, 34, 0, link);
+    pixel_text_adv(canvas, 31, 11, mode_name(state->layer_index), 5);
     rotate_canvas(canvas, cbuf);
 }
 
