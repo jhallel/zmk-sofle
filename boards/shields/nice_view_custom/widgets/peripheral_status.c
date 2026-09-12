@@ -12,15 +12,18 @@ DECL_EVA(31); DECL_EVA(32); DECL_EVA(33); DECL_EVA(34); DECL_EVA(35); DECL_EVA(3
 DECL_EVA(37); DECL_EVA(38); DECL_EVA(39); DECL_EVA(40); DECL_EVA(41); DECL_EVA(42);
 DECL_EVA(43); DECL_EVA(44); DECL_EVA(45); DECL_EVA(46); DECL_EVA(47); DECL_EVA(48);
 DECL_EVA(49); DECL_EVA(50); DECL_EVA(51); DECL_EVA(52); DECL_EVA(53); DECL_EVA(54);
-DECL_EVA(55); DECL_EVA(56); DECL_EVA(57);
+DECL_EVA(55); DECL_EVA(56); DECL_EVA(57); DECL_EVA(58); DECL_EVA(59); DECL_EVA(60);
+DECL_EVA(61); DECL_EVA(62); DECL_EVA(63); DECL_EVA(64); DECL_EVA(65); DECL_EVA(66);
+DECL_EVA(67); DECL_EVA(68); DECL_EVA(69); DECL_EVA(70); DECL_EVA(71); DECL_EVA(72);
+DECL_EVA(73); DECL_EVA(74); DECL_EVA(75);
 #undef DECL_EVA
 
 /*
- * Final 57-frame cinematic reel.
- * Frames 32..55 are the 24-frame EVA-01 awakening.
- * Static/cinematic shots intentionally hold longer; the awakening advances
- * faster so it reads as animation rather than a slideshow.
- * Total loop duration: 32.14 seconds.
+ * Final 75-frame cinematic reel.
+ * Frames 32..49: polished Evangelion-style EMERGENCY warning sequence.
+ * Frames 50..73: 24-frame EVA-01 awakening.
+ * Existing boot/Tokyo-3/facility/cast artwork is preserved unchanged.
+ * Total loop duration: 35.04 seconds.
  */
 static const lv_img_dsc_t *anim_imgs[] = {
     &eva01, &eva02, &eva03, &eva04, &eva05, &eva06, &eva07, &eva08,
@@ -30,16 +33,20 @@ static const lv_img_dsc_t *anim_imgs[] = {
     &eva33, &eva34, &eva35, &eva36, &eva37, &eva38, &eva39, &eva40,
     &eva41, &eva42, &eva43, &eva44, &eva45, &eva46, &eva47, &eva48,
     &eva49, &eva50, &eva51, &eva52, &eva53, &eva54, &eva55, &eva56,
-    &eva57,
+    &eva57, &eva58, &eva59, &eva60, &eva61, &eva62, &eva63, &eva64,
+    &eva65, &eva66, &eva67, &eva68, &eva69, &eva70, &eva71, &eva72,
+    &eva73, &eva74, &eva75,
 };
 
 static const uint16_t anim_duration_ms[] = {
     1210, 990, 990, 990, 1210, 940, 940, 880, 940, 990,
     940, 940, 990, 990, 1040, 770, 770, 770, 770, 770,
     830, 770, 830, 770, 660, 720, 830, 720, 830, 880,
-    990, 180, 180, 170, 170, 165, 165, 160, 160, 160,
-    160, 155, 155, 150, 150, 150, 150, 155, 155, 160,
-    160, 170, 180, 220, 280, 200, 220,
+    990, 180, 180, 180, 180, 130, 130, 180, 180, 180,
+    180, 120, 120, 180, 180, 260, 180, 100, 90, 180,
+    180, 170, 170, 160, 160, 160, 160, 160, 160, 150,
+    150, 150, 150, 150, 150, 150, 150, 160, 160, 170,
+    180, 220, 280, 200, 220,
 };
 
 BUILD_ASSERT(ARRAY_SIZE(anim_imgs) == ARRAY_SIZE(anim_duration_ms),
